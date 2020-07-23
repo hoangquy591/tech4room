@@ -5,6 +5,7 @@
  */
 import { router } from "./_helpers";
 import { store } from "./_store";
+import axios from 'axios';
 
 require('./bootstrap');
 
@@ -30,5 +31,15 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 const app = new Vue({
     el: '#app',
     store,
-    router
+    router,
+    created: function () {
+        axios.interceptors.response.use(undefined, function (err) {
+            return new Promise(function (resolve, reject) {
+                if (err.status === 401 && err.config && ! err.config.__isRetryRequest) {
+                    this.$store.dispatch('auth/logout')
+                }
+                throw err;
+            });
+        });
+    }
 });

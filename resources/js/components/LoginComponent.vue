@@ -11,7 +11,8 @@
                                 <label for="email" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
 
                                 <div class="col-md-6">
-                                    <input id="email" v-model="user.email" type="email" class="form-control" name="email" autofocus>
+                                    <input id="email" v-model="user.email" type="email" class="form-control"
+                                           name="email" autofocus>
 
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
@@ -23,7 +24,8 @@
                                 <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
 
                                 <div class="col-md-6">
-                                    <input id="password" v-model="user.password" type="password" class="form-control" name="password" required>
+                                    <input id="password" v-model="user.password" type="password" class="form-control"
+                                           name="password" required>
 
                                     <span class="invalid-feedback" role="alert">
                                         <strong></strong>
@@ -73,8 +75,18 @@
             }
         },
         methods: {
-            login: function() {
-                this.$store.dispatch('auth/login', this.user).then(()=>this.$router.push('/posts')).catch(err => console.log(err));
+            login: function () {
+                this.$store.dispatch('auth/login', this.user)
+                    .then(
+                        () => {
+                            this.$router.push('/posts')
+                        })
+                    .catch(
+                        () => {
+                            this.user.email = '';
+                            this.user.password = '';
+                        }
+                    )
             }
         },
     }

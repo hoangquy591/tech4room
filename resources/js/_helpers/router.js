@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from "vue-router";
 import {routes} from "./routes";
+import {store} from "../_store";
 
 Vue.use(VueRouter);
 
@@ -10,12 +11,14 @@ export const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/', '/login', '/register', '/posts', '/questions', '/discussions', '/forgot'];
-    const authRequired = !publicPages.includes(to.path);
-    const logged = localStorage.getItem('user');
-
-    if (authRequired && !logged) {
-        return next('/login');
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (store.getters['auth/isLogged']) {
+            next();
+        } else {
+            next('/login');
+        }
+    } else {
+        next()
     }
-    next();
 });
+

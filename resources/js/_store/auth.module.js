@@ -1,70 +1,81 @@
-import { AuthService } from "../_services/auth.service";
-
-const user = JSON.parse(localStorage.getItem('user'));
-const initState = user
-                    ? { status: { logged: true }, user }
-                    : { status: { logged: false}, user: null};
+import {AuthService} from "../_services/auth.service";
+import axios from 'axios';
 
 export const auth = {
     namespaced: true,
     state: {
-        logged: false,
         token: localStorage.getItem('token') || '',
         user: {}
     },
     actions: {
         login({commit}, user) {
-            return AuthService.login(user).then(
-                response => {
-                    console.log(response);
-                    commit('loginSuccess', response.data);
-                    return Promise.resolve(response);
-                },
-                error => {
-                    console.log(error);
-                    commit('loginFailure');
-                    return Promise.reject(error);
-                }
-            )
+            return AuthService.login(user)
+                .then(
+                    (response) => {
+                        if (response.status === 200) {
+                            localStorage.setItem('token', response.data.token);
+                            axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+                            commit('loginSuccess', response.data);
+                            return Promise.resolve(response.data);
+                        }
+                    })
+                .catch(
+                    (error) => {
+                        commit('loginFailure');
+                        return Promise.reject(error.response);
+                    })
         },
-
         logout({commit}) {
-            AuthService.logout();
-            commit('logout');
+            return AuthService.logout().then(
+                (response) => {
+                    localStorage.removeItem('token');
+                    delete axios.defaults.headers.common['Authorization'];
+                    commit('logout');
+                    return Promise.resolve(response);
+                }
+            ).catch(
+                (error) => {
+                    commit('logout');
+                    return Promise.resolve(error.response);
+                });
         },
-
         register({commit}, user) {
             return AuthService.register(user).then(
-                response => {
+                (response) => {
                     commit('registerSuccess');
                     return Promise.resolve(response.data);
                 },
-                error => {
+                (error) => {
                     commit('registerFailure');
-                    return Promise.reject(error)
+                    return Promise.reject(error.response)
                 }
             );
         }
     },
     mutations: {
         loginSuccess(state, data) {
-            state.logged = true;
-            state.user = data.user;
             state.token = data.token;
+            state.user = data.user;
         },
         loginFailure(state) {
-            state.logged = false;
-            state.user = null;
+            state.token = "";
+            state.user = {};
         },
-        // logout(state) {
-        //     state.status.logged = false;
-        //     state.user = null;
-        // },
+        logout(state) {
+            state.token = "";
+            state.user = {};
+        },
         registerSuccess(state) {
-            state.logged = false;
         },
         registerFailure(state) {
-            state.logged = false;
+        }
+    },
+    getters: {
+        isLogged: state => {
+            return !!state.token;
+        },
+        loggedUser: state => {
+            return state.user
         }
     }
 };

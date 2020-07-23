@@ -2083,6 +2083,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "LoginComponent",
   data: function data() {
@@ -2098,9 +2100,10 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$store.dispatch('auth/login', this.user).then(function () {
-        return _this.$router.push('/posts');
-      })["catch"](function (err) {
-        return console.log(err);
+        _this.$router.push('/posts');
+      })["catch"](function () {
+        _this.user.email = '';
+        _this.user.password = '';
       });
     }
   }
@@ -2117,7 +2120,13 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process) {//
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2165,13 +2174,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "NavBarComponent",
   data: function data() {
     return {
       app_name: process.env.MIX_APP_NAME
     };
-  }
+  },
+  methods: {
+    logout: function logout() {
+      var _this = this;
+
+      this.$store.dispatch('auth/logout').then(function (response) {
+        _this.$router.push('/login');
+      });
+    }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
+    isLogged: 'auth/isLogged',
+    loggedUser: 'auth/loggedUser'
+  }))
 });
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
@@ -6766,7 +6799,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\na[data-v-1614d4d2]:active {\n    outline: none;\n}\n", ""]);
+exports.push([module.i, "\na.nav-link[data-v-1614d4d2] {\n    cursor: pointer;\n}\na.nav-link[data-v-1614d4d2]:active {\n    outline: none;\n}\n", ""]);
 
 // exports
 
@@ -39044,30 +39077,74 @@ var render = function() {
               _vm._v(" "),
               _vm._m(1),
               _vm._v(" "),
-              _c(
-                "ul",
-                { staticClass: "navbar-nav ml-auto" },
-                [
-                  _c(
-                    "router-link",
-                    {
-                      staticClass: "nav-item",
-                      attrs: { to: "/login", tag: "li" }
-                    },
-                    [_c("a", { staticClass: "nav-link" }, [_vm._v("Login")])]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
-                    {
-                      staticClass: "nav-item",
-                      attrs: { to: "/register", tag: "li" }
-                    },
-                    [_c("a", { staticClass: "nav-link" }, [_vm._v("Register")])]
+              !_vm.isLogged
+                ? _c(
+                    "ul",
+                    { staticClass: "navbar-nav ml-auto" },
+                    [
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "nav-item",
+                          attrs: { to: "/login", tag: "li" }
+                        },
+                        [
+                          _c("a", { staticClass: "nav-link" }, [
+                            _vm._v("Login")
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "nav-item",
+                          attrs: { to: "/register", tag: "li" }
+                        },
+                        [
+                          _c("a", { staticClass: "nav-link" }, [
+                            _vm._v("Register")
+                          ])
+                        ]
+                      )
+                    ],
+                    1
                   )
-                ],
-                1
-              )
+                : _c(
+                    "ul",
+                    { staticClass: "navbar-nav ml-auto" },
+                    [
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "nav-item",
+                          attrs: { to: "/", tag: "li" }
+                        },
+                        [
+                          _c("a", { staticClass: "nav-link" }, [
+                            _vm._v(_vm._s(_vm.loggedUser.name))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("li", { staticClass: "nav-item" }, [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "nav-link",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.logout($event)
+                              }
+                            }
+                          },
+                          [_vm._v("Logout")]
+                        )
+                      ])
+                    ],
+                    1
+                  )
             ]
           )
         ],
@@ -56013,6 +56090,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes */ "./resources/js/_helpers/routes.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../_store */ "./resources/js/_store/index.js");
+
 
 
 
@@ -56022,15 +56101,17 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: _routes__WEBPACK_IMPORTED_MODULE_2__["routes"]
 });
 router.beforeEach(function (to, from, next) {
-  var publicPages = ['/', '/login', '/register', '/posts', '/questions', '/discussions', '/forgot'];
-  var authRequired = !publicPages.includes(to.path);
-  var logged = localStorage.getItem('user');
-
-  if (authRequired && !logged) {
-    return next('/login');
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    if (_store__WEBPACK_IMPORTED_MODULE_3__["store"].getters['auth/isLogged']) {
+      next();
+    } else {
+      next('/login');
+    }
+  } else {
+    next();
   }
-
-  next();
 });
 
 /***/ }),
@@ -56073,7 +56154,10 @@ var routes = [{
   component: _components_DiscussionsComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
   path: '/example',
-  component: _components_ExampleComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
+  component: _components_ExampleComponent__WEBPACK_IMPORTED_MODULE_0__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }, {
   path: '/login',
   component: _components_LoginComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
@@ -56111,13 +56195,11 @@ function login(user) {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(AUTH_URL + 'login', {
     email: user.email,
     password: user.password
-  }).then(function (response) {
-    return response;
   });
 }
 
 function logout() {
-  localStorage.removeItem('user');
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(AUTH_URL + 'logout');
 }
 
 function register(user) {
@@ -56126,8 +56208,6 @@ function register(user) {
     email: user.email,
     password: user.password,
     password_confirmation: user.password_confirmation
-  }).then(function (response) {
-    return response;
   });
 }
 
@@ -56144,23 +56224,13 @@ function register(user) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "auth", function() { return auth; });
 /* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../_services/auth.service */ "./resources/js/_services/auth.service.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 
-var user = JSON.parse(localStorage.getItem('user'));
-var initState = user ? {
-  status: {
-    logged: true
-  },
-  user: user
-} : {
-  status: {
-    logged: false
-  },
-  user: null
-};
+
 var auth = {
   namespaced: true,
   state: {
-    logged: false,
     token: localStorage.getItem('token') || '',
     user: {}
   },
@@ -56168,19 +56238,28 @@ var auth = {
     login: function login(_ref, user) {
       var commit = _ref.commit;
       return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].login(user).then(function (response) {
-        console.log(response);
-        commit('loginSuccess', response.data);
-        return Promise.resolve(response);
-      }, function (error) {
-        console.log(error);
+        if (response.status === 200) {
+          localStorage.setItem('token', response.data.token);
+          axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+          commit('loginSuccess', response.data);
+          return Promise.resolve(response.data);
+        }
+      })["catch"](function (error) {
         commit('loginFailure');
-        return Promise.reject(error);
+        return Promise.reject(error.response);
       });
     },
     logout: function logout(_ref2) {
       var commit = _ref2.commit;
-      _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].logout();
-      commit('logout');
+      return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].logout().then(function (response) {
+        localStorage.removeItem('token');
+        delete axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'];
+        commit('logout');
+        return Promise.resolve(response);
+      })["catch"](function (error) {
+        commit('logout');
+        return Promise.resolve(error.response);
+      });
     },
     register: function register(_ref3, user) {
       var commit = _ref3.commit;
@@ -56189,29 +56268,32 @@ var auth = {
         return Promise.resolve(response.data);
       }, function (error) {
         commit('registerFailure');
-        return Promise.reject(error);
+        return Promise.reject(error.response);
       });
     }
   },
   mutations: {
     loginSuccess: function loginSuccess(state, data) {
-      state.logged = true;
-      state.user = data.user;
       state.token = data.token;
+      state.user = data.user;
     },
     loginFailure: function loginFailure(state) {
-      state.logged = false;
-      state.user = null;
+      state.token = "";
+      state.user = {};
     },
-    // logout(state) {
-    //     state.status.logged = false;
-    //     state.user = null;
-    // },
-    registerSuccess: function registerSuccess(state) {
-      state.logged = false;
+    logout: function logout(state) {
+      state.token = "";
+      state.user = {};
     },
-    registerFailure: function registerFailure(state) {
-      state.logged = false;
+    registerSuccess: function registerSuccess(state) {},
+    registerFailure: function registerFailure(state) {}
+  },
+  getters: {
+    isLogged: function isLogged(state) {
+      return !!state.token;
+    },
+    loggedUser: function loggedUser(state) {
+      return state.user;
     }
   }
 };
@@ -56231,14 +56313,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _auth_module__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./auth.module */ "./resources/js/_store/auth.module.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _auth_module__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./auth.module */ "./resources/js/_store/auth.module.js");
+
 
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var token = localStorage.getItem('token');
+
+if (token) {
+  axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
-    auth: _auth_module__WEBPACK_IMPORTED_MODULE_2__["auth"]
+    auth: _auth_module__WEBPACK_IMPORTED_MODULE_3__["auth"]
   }
 });
 
@@ -56255,11 +56346,14 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_helpers */ "./resources/js/_helpers/index.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_store */ "./resources/js/_store/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+
 
 
 
@@ -56288,7 +56382,18 @@ files.keys().map(function (key) {
 var app = new Vue({
   el: '#app',
   store: _store__WEBPACK_IMPORTED_MODULE_1__["store"],
-  router: _helpers__WEBPACK_IMPORTED_MODULE_0__["router"]
+  router: _helpers__WEBPACK_IMPORTED_MODULE_0__["router"],
+  created: function created() {
+    axios__WEBPACK_IMPORTED_MODULE_2___default.a.interceptors.response.use(undefined, function (err) {
+      return new Promise(function (resolve, reject) {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch('auth/logout');
+        }
+
+        throw err;
+      });
+    });
+  }
 });
 
 /***/ }),

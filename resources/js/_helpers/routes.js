@@ -7,12 +7,39 @@ import RegisterComponent from "../components/RegisterComponent";
 import ForgotPasswordComponent from "../components/ForgotPasswordComponent";
 
 export const routes = [
-    { path: '/', redirect: '/posts'},
-    { path: '/posts', component: PostsComponent},
-    { path: '/questions', component: QuestionsComponent},
-    { path: '/discussions', component: DiscussionsComponent},
-    { path: '/example', component: ExampleComponent},
-    { path: '/login', component: LoginComponent},
-    { path: '/register', component: RegisterComponent},
-    { path: '/forgot', component: ForgotPasswordComponent},
+    {
+        path: '/',
+        redirect: '/posts'
+    },
+    {
+        path: '/posts',
+        component: PostsComponent
+    },
+    {
+        path: '/questions',
+        component: QuestionsComponent
+    },
+    {
+        path: '/discussions',
+        component: DiscussionsComponent
+    },
+    {
+        path: '/example',
+        component: ExampleComponent,
+        meta : {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/login',
+        component: LoginComponent
+    },
+    {
+        path: '/register',
+        component: RegisterComponent
+    },
+    {
+        path: '/forgot',
+        component: ForgotPasswordComponent
+    },
 ];

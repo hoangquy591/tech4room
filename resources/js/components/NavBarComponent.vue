@@ -30,9 +30,8 @@
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                 </form>
-
                 <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" v-if="! isLogged">
                     <!-- Authentication Links -->
                     <router-link class="nav-item" to="/login" tag="li">
                         <a class="nav-link">Login</a>
@@ -41,24 +40,52 @@
                         <a class="nav-link">Register</a>
                     </router-link>
                 </ul>
+                <ul class="navbar-nav ml-auto" v-else>
+                    <!-- Authentication Links -->
+                    <router-link class="nav-item" to="/" tag="li">
+                        <a class="nav-link">{{loggedUser.name}}</a>
+                    </router-link>
+                    <li class="nav-item">
+                        <a class="nav-link" @click.prevent="logout">Logout</a>
+                    </li>
+                </ul>
+
             </div>
         </div>
     </nav>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         name: "NavBarComponent",
         data() {
             return {
                 app_name: process.env.MIX_APP_NAME,
             }
+        },
+        methods: {
+            logout: function () {
+                this.$store.dispatch('auth/logout').then((response) => {
+                    this.$router.push('/login')
+                });
+            }
+        },
+        computed: {
+            ...mapGetters({
+                isLogged : 'auth/isLogged',
+                loggedUser : 'auth/loggedUser'
+            })
         }
     }
 </script>
 
 <style scoped>
-    a:active {
+    a.nav-link {
+        cursor: pointer;
+    }
+    a.nav-link:active {
         outline: none;
     }
 </style>

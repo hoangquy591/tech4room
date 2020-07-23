@@ -20,7 +20,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         if(!Auth::attempt($credentials))
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Invalid Credentials'
             ], Response::HTTP_UNAUTHORIZED);
 
         $user = $request->user();
@@ -33,9 +33,7 @@ class AuthController extends Controller
         return response()->json([
             'token' => $tokenResult->accessToken,
             'type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString(),
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
             'user' => $user
         ], Response::HTTP_OK);
     }
@@ -43,7 +41,7 @@ class AuthController extends Controller
     public function register(Request $request) {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email|unique',
             'password' => 'required|string|confirmed'
         ]);
         $user = new User([

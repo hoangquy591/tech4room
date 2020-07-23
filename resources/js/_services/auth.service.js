@@ -15,13 +15,13 @@ function login(user) {
             email: user.email,
             password: user.password
         }
-    ).then(response => {
-        return response;
-    });
+    )
 }
 
 function logout() {
-    localStorage.removeItem('user');
+    return axios.get(
+        AUTH_URL+'logout'
+    )
 }
 
 function register(user) {
@@ -33,7 +33,5 @@ function register(user) {
             password: user.password,
             password_confirmation: user.password_confirmation
         }
-    ).then(response => {
-        return response;
-    })
+    )
 }
