@@ -56188,8 +56188,13 @@ var AUTH_URL = 'http://tech4room.test:8080/api/auth/';
 var AuthService = {
   login: login,
   logout: logout,
-  register: register
+  register: register,
+  checkLogged: checkLogged
 };
+
+function checkLogged() {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(AUTH_URL + 'user');
+}
 
 function login(user) {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(AUTH_URL + 'login', {
@@ -56232,15 +56237,20 @@ var auth = {
   namespaced: true,
   state: {
     token: localStorage.getItem('token') || '',
-    user: {}
+    user: JSON.parse(localStorage.getItem('user')) || {}
   },
   actions: {
-    login: function login(_ref, user) {
+    checkLogged: function checkLogged(_ref) {
       var commit = _ref.commit;
+      return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].checkLogged()["catch"](function (error) {
+        commit('logout');
+        return Promise.reject(error);
+      });
+    },
+    login: function login(_ref2, user) {
+      var commit = _ref2.commit;
       return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].login(user).then(function (response) {
         if (response.status === 200) {
-          localStorage.setItem('token', response.data.token);
-          axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
           commit('loginSuccess', response.data);
           return Promise.resolve(response.data);
         }
@@ -56249,11 +56259,9 @@ var auth = {
         return Promise.reject(error.response);
       });
     },
-    logout: function logout(_ref2) {
-      var commit = _ref2.commit;
+    logout: function logout(_ref3) {
+      var commit = _ref3.commit;
       return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].logout().then(function (response) {
-        localStorage.removeItem('token');
-        delete axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'];
         commit('logout');
         return Promise.resolve(response);
       })["catch"](function (error) {
@@ -56261,8 +56269,8 @@ var auth = {
         return Promise.resolve(error.response);
       });
     },
-    register: function register(_ref3, user) {
-      var commit = _ref3.commit;
+    register: function register(_ref4, user) {
+      var commit = _ref4.commit;
       return _services_auth_service__WEBPACK_IMPORTED_MODULE_0__["AuthService"].register(user).then(function (response) {
         commit('registerSuccess');
         return Promise.resolve(response.data);
@@ -56274,6 +56282,9 @@ var auth = {
   },
   mutations: {
     loginSuccess: function loginSuccess(state, data) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
       state.token = data.token;
       state.user = data.user;
     },
@@ -56282,6 +56293,8 @@ var auth = {
       state.user = {};
     },
     logout: function logout(state) {
+      localStorage.clear();
+      delete axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'];
       state.token = "";
       state.user = {};
     },
@@ -56384,14 +56397,11 @@ var app = new Vue({
   store: _store__WEBPACK_IMPORTED_MODULE_1__["store"],
   router: _helpers__WEBPACK_IMPORTED_MODULE_0__["router"],
   created: function created() {
-    axios__WEBPACK_IMPORTED_MODULE_2___default.a.interceptors.response.use(undefined, function (err) {
-      return new Promise(function (resolve, reject) {
-        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-          this.$store.dispatch('auth/logout');
-        }
+    var _this = this;
 
-        throw err;
-      });
+    axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common['Accept'] = 'application/json';
+    this.$store.dispatch('auth/checkLogged')["catch"](function (error) {
+      _this.$router.push('/');
     });
   }
 });

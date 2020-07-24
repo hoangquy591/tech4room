@@ -5,16 +5,22 @@ export const auth = {
     namespaced: true,
     state: {
         token: localStorage.getItem('token') || '',
-        user: {}
+        user: JSON.parse(localStorage.getItem('user')) || {}
     },
     actions: {
+        checkLogged({commit}) {
+            return AuthService.checkLogged().catch(
+                error => {
+                    commit('logout');
+                    return Promise.reject(error);
+                }
+            )
+        },
         login({commit}, user) {
             return AuthService.login(user)
                 .then(
                     (response) => {
                         if (response.status === 200) {
-                            localStorage.setItem('token', response.data.token);
-                            axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                             commit('loginSuccess', response.data);
                             return Promise.resolve(response.data);
                         }
@@ -28,8 +34,6 @@ export const auth = {
         logout({commit}) {
             return AuthService.logout().then(
                 (response) => {
-                    localStorage.removeItem('token');
-                    delete axios.defaults.headers.common['Authorization'];
                     commit('logout');
                     return Promise.resolve(response);
                 }
@@ -54,6 +58,9 @@ export const auth = {
     },
     mutations: {
         loginSuccess(state, data) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
             state.token = data.token;
             state.user = data.user;
         },
@@ -62,6 +69,8 @@ export const auth = {
             state.user = {};
         },
         logout(state) {
+            localStorage.clear();
+            delete axios.defaults.headers.common['Authorization'];
             state.token = "";
             state.user = {};
         },

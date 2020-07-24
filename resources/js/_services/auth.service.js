@@ -6,7 +6,14 @@ export const AuthService = {
     login,
     logout,
     register,
+    checkLogged,
 };
+
+function checkLogged() {
+    return axios.get(
+        AUTH_URL+'user',
+    )
+}
 
 function login(user) {
     return axios.post(

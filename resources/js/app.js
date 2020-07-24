@@ -33,13 +33,9 @@ const app = new Vue({
     store,
     router,
     created: function () {
-        axios.interceptors.response.use(undefined, function (err) {
-            return new Promise(function (resolve, reject) {
-                if (err.status === 401 && err.config && ! err.config.__isRetryRequest) {
-                    this.$store.dispatch('auth/logout')
-                }
-                throw err;
-            });
+        axios.defaults.headers.common['Accept'] = 'application/json';
+        this.$store.dispatch('auth/checkLogged').catch((error) => {
+            this.$router.push('/')
         });
     }
 });
