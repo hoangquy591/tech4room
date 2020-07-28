@@ -34,8 +34,9 @@ const app = new Vue({
     router,
     created: function () {
         axios.defaults.headers.common['Accept'] = 'application/json';
+        if (localStorage.getItem('token'))
         this.$store.dispatch('auth/checkLogged').catch((error) => {
-            this.$router.push('/')
+            this.$router.push('/login')
         });
     }
 });

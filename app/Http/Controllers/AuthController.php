@@ -27,8 +27,10 @@ class AuthController extends Controller
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
 
+        /*
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addDays(1);
+        */
 
         return response()->json([
             'token' => $tokenResult->accessToken,
@@ -39,17 +41,23 @@ class AuthController extends Controller
     }
 
     public function register(Request $request) {
+
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|string|email|unique',
+            'uname' => 'required|string|unique:users',
+            'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed'
         ]);
+
         $user = new User([
             'name' => $request->name,
+            'uname' => $request->uname,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
+
         $user->save();
+
         return response()->json([
             'message' => 'Successfully created user!'
         ], Response::HTTP_OK);

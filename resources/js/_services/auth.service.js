@@ -36,6 +36,7 @@ function register(user) {
         AUTH_URL + 'register',
         {
             name: user.name,
+            uname: user.uname,
             email: user.email,
             password: user.password,
             password_confirmation: user.password_confirmation
