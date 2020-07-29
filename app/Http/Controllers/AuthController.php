@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\UserRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    private $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function login(Request $request) {
         $request->validate([
             'email' => 'required|string|email',
@@ -56,7 +64,7 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
-        $user->save();
+        $this->userRepository->store($user);
 
         return response()->json([
             'message' => 'Successfully created user!'

@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-        <div class="container">
+        <div class="container-fluid">
             <router-link class="navbar-brand" to="/">
                 {{ app_name }}
             </router-link>
@@ -37,7 +37,7 @@
                     </router-link>
                 </ul>
                 <ul class="navbar-nav ml-auto align-items-center" v-else>
-                    <router-link class="nav-item" to="/" tag="li">
+                    <li class="nav-item">
                         <div class="dropdown">
                             <a class="dropdown-toggle nav-link" data-toggle="dropdown">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -63,16 +63,16 @@
                                 </router-link>
                             </div>
                         </div>
-                    </router-link>
-                    <router-link class="nav-item" to="/" tag="li">
+                    </li>
+                    <li class="nav-item">
                         <div class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img class="rounded-circle avatar--md" src="../../assets/default-avatar-img.jpg" alt="">
+                                <img class="rounded-circle avatar--md" src="../../../assets/default-avatar-img.jpg" alt="">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right pt-0 py-0 border-0">
                                 <div class="card">
                                     <div class="card-header d-flex">
-                                        <img class="rounded-circle mr-1" src="../../assets/default-avatar-img.jpg" alt="">
+                                        <img class="rounded-circle mr-1" src="../../../assets/default-avatar-img.jpg" alt="">
                                         <div>
                                             <span class="text-primary">{{loggedUser.name}}</span>
                                             <p class="mb-2">@{{loggedUser.uname}}</p>
@@ -101,7 +101,7 @@
                                 </div>
                             </div>
                         </div>
-                    </router-link>
+                    </li>
 <!--                    <li class="nav-item">-->
 <!--                        <a class="nav-link" @click.prevent="logout">Logout</a>-->
 <!--                    </li>-->

@@ -6,6 +6,7 @@
 import { router } from "./_helpers";
 import { store } from "./_store";
 import axios from 'axios';
+import Vuelidate from "vuelidate";
 
 require('./bootstrap');
 
@@ -27,6 +28,8 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+Vue.use(Vuelidate);
 
 const app = new Vue({
     el: '#app',
