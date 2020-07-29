@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\UserRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    private $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function login(Request $request) {
         $request->validate([
             'email' => 'required|string|email',
@@ -20,38 +28,44 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         if(!Auth::attempt($credentials))
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Invalid Credentials'
             ], Response::HTTP_UNAUTHORIZED);
 
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
 
+        /*
         if ($request->remember_me)
             $token->expires_at = Carbon::now()->addDays(1);
+        */
 
         return response()->json([
             'token' => $tokenResult->accessToken,
             'type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString(),
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
             'user' => $user
         ], Response::HTTP_OK);
     }
 
     public function register(Request $request) {
+
         $request->validate([
             'name' => 'required|string',
+            'uname' => 'required|string|unique:users',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed'
         ]);
+
         $user = new User([
             'name' => $request->name,
+            'uname' => $request->uname,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
-        $user->save();
+
+        $this->userRepository->store($user);
+
         return response()->json([
             'message' => 'Successfully created user!'
         ], Response::HTTP_OK);
@@ -65,7 +79,7 @@ class AuthController extends Controller
     }
 
     public function user(Request $request) {
-        return response()->json($request->user());
+        return response()->json(auth()->user());
     }
 
 }

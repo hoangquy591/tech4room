@@ -1,0 +1,15 @@
+
+input.form-control:focus {
+    border-color:#227dc7;
+    box-shadow: none;
+}
+
+span.input-group-text {
+    padding: 0 15px 0 15px;
+    color: #909399;
+}
+
+p.invalid-feedback {
+    display: block;
+}
+

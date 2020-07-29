@@ -6,7 +6,14 @@ export const AuthService = {
     login,
     logout,
     register,
+    checkLogged,
 };
+
+function checkLogged() {
+    return axios.get(
+        AUTH_URL+'user',
+    )
+}
 
 function login(user) {
     return axios.post(
@@ -15,13 +22,13 @@ function login(user) {
             email: user.email,
             password: user.password
         }
-    ).then(response => {
-        return response;
-    });
+    )
 }
 
 function logout() {
-    localStorage.removeItem('user');
+    return axios.get(
+        AUTH_URL+'logout'
+    )
 }
 
 function register(user) {
@@ -29,11 +36,10 @@ function register(user) {
         AUTH_URL + 'register',
         {
             name: user.name,
+            uname: user.uname,
             email: user.email,
             password: user.password,
             password_confirmation: user.password_confirmation
         }
-    ).then(response => {
-        return response;
-    })
+    )
 }
