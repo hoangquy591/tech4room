@@ -25,22 +25,26 @@ class BaseRepositoryImpl implements BaseRepositoryInterface
 
     /**
      * Get all
+     * @param $recordPerPage
      * @return mixed
      */
-    public function all()
+    public function all($recordPerPage)
     {
-        return $this->model->all();
+        if ($recordPerPage != null) {
+            return $this->model->paginate($recordPerPage);
+        }
+        return $this->model->paginate(15);
     }
 
-    public function store(Model $model)
-    {
-        return $model->save();
-    }/**
+    /**
      * Store
      * @param $attributes
      * @return mixed
      */
-
+    public function store(Model $model)
+    {
+        return $model->save();
+    }
 
     /**
      * Get one

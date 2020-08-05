@@ -10,9 +10,10 @@ interface BaseRepositoryInterface
 {
     /**
      * Get all
+     * @param $recordPerPage
      * @return mixed
      */
-    public function all();
+    public function all($recordPerPage);
 
     /**
      * Store

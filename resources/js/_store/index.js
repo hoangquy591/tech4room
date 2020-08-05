@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import axios from 'axios';
 
 import {auth} from "./auth.module";
+import {question} from "./question.module"
 
 Vue.use(Vuex);
 
@@ -14,6 +15,7 @@ if (token) {
 
 export const store = new Vuex.Store({
     modules: {
-        auth
+        auth,
+        question
     }
 });
