@@ -1,5 +1,5 @@
 import {AuthService} from "../_services/auth.service";
-import axios from 'axios';
+// import axios from 'axios';
 
 export const auth = {
     namespaced: true,

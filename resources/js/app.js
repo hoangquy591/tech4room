@@ -7,6 +7,7 @@ import { router } from "./_helpers";
 import { store } from "./_store";
 import axios from 'axios';
 import Vuelidate from "vuelidate";
+import VueEditor  from "vue2-quill-editor";
 
 require('./bootstrap');
 
@@ -30,6 +31,7 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
  */
 
 Vue.use(Vuelidate);
+Vue.use(VueEditor);
 
 const app = new Vue({
     el: '#app',
@@ -39,7 +41,7 @@ const app = new Vue({
         axios.defaults.headers.common['Accept'] = 'application/json';
         if (localStorage.getItem('token'))
         this.$store.dispatch('auth/checkLogged').catch((error) => {
-            this.$router.push('/login')
+            this.$router.push('/').catch();
         });
     }
 });

@@ -3,8 +3,11 @@ import PostsComponent from "../components/posts/PostsComponent";
 import QuestionsComponent from "../components/questions/QuestionsComponent";
 import DiscussionsComponent from "../components/DiscussionsComponent";
 import LoginComponent from "../components/auth/LoginComponent";
+import QuestionCreate from "../components/questions/QuestionCreate";
 import RegisterComponent from "../components/auth/RegisterComponent";
 import ForgotPasswordComponent from "../components/ForgotPasswordComponent";
+import QuestionDetails from "../components/questions/QuestionDetails";
+import QuestionList from "../components/questions/QuestionList";
 
 export const routes = [
     {
@@ -17,7 +20,23 @@ export const routes = [
     },
     {
         path: '/questions',
-        component: QuestionsComponent
+        component: QuestionsComponent,
+        children: [
+            {
+                path: '',
+                component: QuestionList
+            },
+            {
+                path: 'ask',
+                name: 'questions.ask',
+                component: QuestionCreate
+            }
+        ]
+    },
+    {
+        path: '/q',
+        name: 'qdetail',
+        component: QuestionDetails
     },
     {
         path: '/discussions',
@@ -26,7 +45,7 @@ export const routes = [
     {
         path: '/example',
         component: ExampleComponent,
-        meta : {
+        meta: {
             requiresAuth: true
         }
     },

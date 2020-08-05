@@ -10,7 +10,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav mr-auto">
                     <router-link class="nav-item" to="/posts" tag="li" active-class="active" exact>
@@ -55,7 +55,7 @@
                                         <span class="">New series</span>
                                     </div>
                                 </router-link>
-                                <router-link class="dropdown-item" to="/" tag="a">
+                                <router-link class="dropdown-item" :to="{name: 'questions.ask'}" tag="a">
                                     <div class="row">
                                         <i class="fa fa-question-circle-o col-md-2 pl-0" aria-hidden="true"></i>
                                         <span class="">Ask question</span>
